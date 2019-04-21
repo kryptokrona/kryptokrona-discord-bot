@@ -1,6 +1,8 @@
-var kkrwallet = require('turtlecoin-walletd-rpc-js').default
+var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
 
-var walletd = new kkrwallet(
+const http = require('http');
+
+var walletd = new TurtleCoinWalletd(
   'http://localhost',
   8080,
   'password',
@@ -167,7 +169,7 @@ client.on('message', msg => {
 
             sender_wallet = resp.body.result.address;
 
-	    msg.reply(" just tipped " + receiver + " " + amount + " KKR.");
+	    msg.react("💸");
 
 
           })
@@ -178,6 +180,48 @@ client.on('message', msg => {
 
 
 }
+
+  if (msg.content.startsWith('!status') ) {
+
+	http.get('http://localhost:11898/getinfo', (resp) => {
+  let data = '';
+
+  // A chunk of data has been recieved.
+  resp.on('data', (chunk) => {
+    data += chunk;
+	console.log(data);
+	json = JSON.parse(data);
+
+
+	const embed = new Discord.RichEmbed()
+      // Set the title of the field
+      .setTitle('KRYPTOKRONA STATUS')
+      .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo.png")
+      // Set the color of the embed
+      .setColor(0xff9300)
+      // Set the main content of the embed
+      .setDescription('Current block height and hashrate')
+      .addField("Hashrate", json.hashrate + ' h/s', true )
+      .addField("Blocks", json.height, true );
+    // Send the embed to the same channel as the message
+   
+
+
+
+
+	msg.reply(embed);
+  });
+
+  // The whole response has been received. Print out the result.
+  resp.on('end', () => {
+    console.log(JSON.parse(data).explanation);
+  });
+
+}).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
+
+  }
   if (msg.content.startsWith('!balance') ) {
 	user_bank = getUserBank(msg.author.id);
 	console.log(user_bank);
