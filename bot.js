@@ -58,7 +58,7 @@ let getUserWallet = (user) => {
                 }
 
         }
-	
+
 	return false;
 
 }
@@ -90,8 +90,8 @@ client.on('message', msg => {
 
   if ( msg.content.startsWith('!register') ) {
 
-        command = msg.content.split(' ');
-	address = command[1];
+        let command = msg.content.split(' ');
+	let address = command[1];
 
 	if ( command[2] ) {
 		msg.reply('Too many arguments!');
@@ -133,7 +133,36 @@ client.on('message', msg => {
     msg.reply('Wallet registered! Your tips will be payed out to this account.');
 
 }
-  if (msg.content.startsWith('!tip')) { 
+
+  if (msg.content.startsWith('!help')) {
+
+      console.log('help required kekeke');
+
+    	const embed = new Discord.RichEmbed()
+          // Set the title of the field
+          .setTitle('AVAILABLE COMMANDS')
+          .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
+          // Set the color of the embed
+          .setColor(0xff9300)
+          // Set the main content of the embed
+          .setDescription('Simply type out these commands, either in a channel where kryptokronabot is present or in a private message to the bot')
+          .addField("!help", 'Displays this message.', false )
+          .addField("!status", 'Displays current status of the kryptokrona network.', false )
+          .addField("!register <address>", 'Registers a kryptokrona address for receiving tips (tags shouldn\'t be used)', false )
+          .addField("!tip <@user> <amount>", 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)', false )
+          .addField("!send <address> <amount>", 'Sends <amount> XKR to <address> (tags shouldn\'t be used)', false )
+        // Send the embed to the same channel as the message
+
+
+
+
+
+    	msg.reply(embed);
+
+
+  }
+
+  if (msg.content.startsWith('!tip')) {
 
 	command = msg.content.split(' ');
 	receiver = command[1];
@@ -141,9 +170,9 @@ client.on('message', msg => {
 
 	amount = command[2];
 
-        if ( command[3] ) {
-                msg.reply('Too many arguments!');
-        }
+  if ( command[3] ) {
+          msg.reply('Too many arguments!');
+  }
 
 	receiver_wallet = getUserWallet(receiver_id);
 
@@ -181,6 +210,46 @@ client.on('message', msg => {
 
 }
 
+  if (msg.content.startsWith('!send')) {
+
+    console.log('Send command activated');
+
+    sender_wallet = getUserBank(msg.author.id);
+    command = msg.content.split(' ');
+  	receiver_address = command[1];
+    amount = command[2];
+
+    if ( command[3] ) {
+      msg.reply('Too many arguments!');
+      return;
+    }
+
+    if ( receiver_address.length != 99 || !receiver_address.startsWith('SEKR') ) {
+      msg.reply('Sorry, address is invalid.')
+      return;
+    }
+
+    walletd
+            .sendTransaction(0,[{"address":receiver_address,"amount":parseInt(amount)*100}],10,[sender_wallet])
+            .then(resp => {
+              console.log(resp.status)
+              console.log(resp.headers)
+              console.log(resp.body)
+
+              sender_wallet = resp.body.result.address;
+
+  	    msg.react("💸");
+
+
+            })
+            .catch(err => {
+              console.log(err)
+  		msg.author.send("Sorry you don't have enough XKR in your wallet. Use !balance for more information.");
+            })
+
+
+  }
+
   if (msg.content.startsWith('!status') ) {
 
 	http.get('http://localhost:11898/getinfo', (resp) => {
@@ -196,7 +265,7 @@ client.on('message', msg => {
 	const embed = new Discord.RichEmbed()
       // Set the title of the field
       .setTitle('KRYPTOKRONA STATUS')
-      .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo.png")
+      .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
       // Set the color of the embed
       .setColor(0xff9300)
       // Set the main content of the embed
@@ -204,7 +273,7 @@ client.on('message', msg => {
       .addField("Hashrate", json.hashrate + ' h/s', true )
       .addField("Blocks", json.height, true );
     // Send the embed to the same channel as the message
-   
+
 
 
 
@@ -258,7 +327,7 @@ client.on('message', msg => {
 
 });
 
-client.login('token');
+client.login('discord_token');
 
 walletd
   .getStatus()
