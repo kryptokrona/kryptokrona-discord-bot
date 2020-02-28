@@ -134,6 +134,15 @@ client.on('message', msg => {
 
 }
 
+//Bot prompt for new bounty added
+
+client.on('message', msg => { 
+  if (msg.content.startsWith === 'Bounty: ') { 
+
+    msg.reply('New bounty added! Check it out guys!!'); 
+    
+  } });
+
   if (msg.content.startsWith('!help')) {
 
       console.log('help required kekeke');
