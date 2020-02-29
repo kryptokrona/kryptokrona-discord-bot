@@ -149,6 +149,15 @@ client.on('guildMemberAdd', member => {
 
 });
 
+//Bot prompt for new bounty added
+
+client.on('message', msg => { 
+  if (msg.content.startsWith === 'Bounty: ') { 
+
+    msg.reply('New bounty added! Check it out guys!!'); 
+
+  } });
+
 client.on('message', msg => {
 
   if ( msg.content.startsWith('!register') ) {
@@ -215,6 +224,9 @@ client.on('message', msg => {
           .addField("!tip <@user> <amount>", 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)', false )
           .addField("!send <address> <amount>", 'Sends <amount> XKR to <address> (tags shouldn\'t be used)', false )
         // Send the embed to the same channel as the message
+        //addendum
+          .addField("!tipall <amount>", 'Sends <amount> XKR to all registered wallets (tags shouldn\'t be used)', false )
+          .addField("!tiprandom <amount>", 'Sends <amount> XKR to random registered wallet (tags shouldn\'t be used)', false )
 
 
 
