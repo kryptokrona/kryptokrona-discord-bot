@@ -5,7 +5,7 @@ const http = require('http');
 var walletd = new TurtleCoinWalletd(
   'http://localhost',
   8080,
-  'password',
+  'passw0rd',
   true
 )
 
@@ -86,11 +86,74 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
+client.on('guildMemberAdd', member => {
+  // Send the message to a designated channel on a server:
+  const channel = member.guild.channels.find(ch => ch.name === 'general');
+  // Do nothing if the channel wasn't found on this server
+  if (!channel) return;
+  // Send the message, mentioning the member
+  channel.send(`Welcome to the server, ${member}`);
+
+
+
+  user_bank = getUserBank(member.id);
+
+  if (!user_bank) {
+    walletd
+            .createAddress()
+            .then(resp => {
+              console.log(resp.status)
+              console.log(resp.headers)
+              console.log(resp.body)
+
+              wallet_addr = resp.body.result.address;
+
+              bank.wallets.push({"user":member.id, "wallet":wallet_addr});
+
+              registerWallet(member.id, wallet_addr);
+
+
+                            member.send('Congratulations! You just got a kryptokrona wallet 😎');
+                            member.send('Your address is: ' + wallet_addr);
+                            member.send('You can use this address to deposit XKR, and if you want to withdraw simply use the !send command.')
+                            member.send('Type !help for more information and more commands!');
+                            member.send('If you want to help us out, you can use your wallet address to start mining. Read more here: https://kryptokrona.se/mining-pool/');
+
+
+              let json = JSON.stringify(bank);
+              fs.writeFile('bank.json',json,'utf8');
+
+
+              	walletd
+                        .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['SEKReTyRMJx2LTUrbf2r7GdMJ9PY5yHbYN6MCZkKUVvKZSwwwf3HnUS6Jia3TkD4jWgfxeh1AEYV3DKEAesSb7mSAvNqfCNBXrg'])
+                        .then(resp => {
+                          console.log(resp.status)
+                          console.log(resp.headers)
+                          console.log(resp.body)
+
+                          member.send('Oh, and we also deposited 1000 XKR to your wallet as a thanks for joining us! Don\'t spend it all in one place 🤪');
+
+
+                        })
+                        .catch(err => {
+                          console.log(err)
+
+                        })
+
+
+            })
+            .catch(err => {
+              console.log(err)
+            })
+    }
+
+});
+
 client.on('message', msg => {
 
   if ( msg.content.startsWith('!register') ) {
 
-        let command = msg.content.split(' ');
+  let command = msg.content.split(' ');
 	let address = command[1];
 
 	if ( command[2] ) {
@@ -327,7 +390,7 @@ client.on('message', msg => {
 
 });
 
-client.login('discord_token');
+client.login('t0k3n');
 
 walletd
   .getStatus()
