@@ -230,6 +230,7 @@ client.on('message', msg => {
           .addField("!help", 'Displays this message.', false )
           .addField("!status", 'Displays current status of the kryptokrona network.', false )
           .addField("!register <address>", 'Registers a kryptokrona address for receiving tips (tags shouldn\'t be used)', false )
+	  .addField("!balance", 'Displays your balance, pending transfers, and your address.', false )
           .addField("!tip <@user> <amount>", 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)', false )
           .addField("!send <address> <amount>", 'Sends <amount> XKR to <address> (tags shouldn\'t be used)', false )
         // Send the embed to the same channel as the message
@@ -285,7 +286,7 @@ client.on('message', msg => {
           })
           .catch(err => {
             console.log(err)
-		msg.author.send("Sorry you don't have enough KKR in your wallet. Use !balance for more information.");
+		msg.author.send("Sorry you don't have enough XKR in your wallet. Use !balance for more information.");
           })
 
 
@@ -391,7 +392,7 @@ client.on('message', msg => {
 
 	    locked = resp.body.result.lockedAmount / 100;
 
-	    msg.author.send("Your current balance is: " + balance + " KKR (" + locked + " pending). To top it up, send more to " + user_bank);
+	    msg.author.send("Your current balance is: " + balance + " XKR (" + locked + " pending). To top it up, send more to " + user_bank);
 
           })
           .catch(err => {
