@@ -16,7 +16,7 @@ var fs = require('fs');
 let db = {'wallets':[]};
 
 try {
-	db = JSON.parse(fs.readFileSync('db.json', 'utf8'));
+	db = JSON.parse(fs.readFileSync('db.json', 'utf8')); 
 } catch(err) {}
 
 // LOAD DATABASE OF TIP FUND WALLETS (SERVER RECIEVE)
@@ -154,46 +154,64 @@ client.on('message', msg => {
   if ( msg.content.startsWith('!register') ) {
 
   let command = msg.content.split(' ');
-	let address = command[1];
 
 	if ( command[2] ) {
 		msg.reply('Too many arguments!');
 		return;
 	}
 
-        if ( address.length != 99 || !address.startsWith('SEKR') ) {
-		msg.reply('Sorry, address is invalid.')
-		return;
-	}
-
-    registerWallet(msg.author.id, address);
 
     user_bank = getUserBank(msg.author.id);
 
     if (!user_bank) {
-	walletd
-          .createAddress()
-          .then(resp => {
-            console.log(resp.status)
-            console.log(resp.headers)
-            console.log(resp.body)
+      walletd
+              .createAddress()
+              .then(resp => {
+                console.log(resp.status)
+                console.log(resp.headers)
+                console.log(resp.body)
 
-            wallet_addr = resp.body.result.address;
-            bank.wallets.push({"user":msg.author.id, "wallet":wallet_addr});
+                wallet_addr = resp.body.result.address;
 
-	    msg.author.send('Your new address for depositing tip funds is: ' + wallet_addr);
+                bank.wallets.push({"user":msg.author.id, "wallet":wallet_addr});
 
-            let json = JSON.stringify(bank);
-            fs.writeFile('bank.json',json,'utf8');
+                registerWallet(msg.author.id, wallet_addr);
 
 
-          })
-          .catch(err => {
-            console.log(err)
-          })
-	}
+                              msg.author.send('Congratulations! You just got a kryptokrona wallet 😎');
+                              msg.author.send('Your address is: ' + wallet_addr);
+                              msg.author.send('You can use this address to deposit XKR, and if you want to withdraw simply use the !send command.')
+                              msg.author.send('Type !help for more information and more commands!');
+                              msg.author.send('If you want to help us out, you can use your wallet address to start mining. Read more here: https://kryptokrona.se/mining-pool/');
 
-    msg.reply('Wallet registered! Your tips will be payed out to this account.');
+
+                let json = JSON.stringify(bank);
+                fs.writeFile('bank.json',json,'utf8');
+
+
+                	walletd
+                          .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['SEKReTyRMJx2LTUrbf2r7GdMJ9PY5yHbYN6MCZkKUVvKZSwwwf3HnUS6Jia3TkD4jWgfxeh1AEYV3DKEAesSb7mSAvNqfCNBXrg'])
+                          .then(resp => {
+                            console.log(resp.status)
+                            console.log(resp.headers)
+                            console.log(resp.body)
+
+                            member.send('Oh, and we also deposited 1000 XKR to your wallet as a thanks for joining us! Don\'t spend it all in one place 🤪');
+
+
+                          })
+                          .catch(err => {
+                            console.log(err)
+
+                          })
+
+
+              })
+              .catch(err => {
+                console.log(err)
+              })
+      }
+
 
 }
 
@@ -390,7 +408,7 @@ client.on('message', msg => {
 
 });
 
-client.login('t0k3n');
+client.login('discord-api-key');
 
 walletd
   .getStatus()
