@@ -16,7 +16,7 @@ var fs = require('fs');
 let db = {'wallets':[]};
 
 try {
-	db = JSON.parse(fs.readFileSync('db.json', 'utf8')); 
+	db = JSON.parse(fs.readFileSync('db.json', 'utf8'));
 } catch(err) {}
 
 // LOAD DATABASE OF TIP FUND WALLETS (SERVER RECIEVE)
@@ -219,7 +219,7 @@ client.on('message', msg => {
 
       console.log('help required kekeke');
 
-    	const embed = new Discord.RichEmbed()
+    	const embed = new Discord.MessageEmbed()
           // Set the title of the field
           .setTitle('AVAILABLE COMMANDS')
           .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
@@ -344,7 +344,7 @@ client.on('message', msg => {
 	json = JSON.parse(data);
 
 
-	const embed = new Discord.RichEmbed()
+	const embed = new Discord.MessageEmbed()
       // Set the title of the field
       .setTitle('KRYPTOKRONA STATUS')
       .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
