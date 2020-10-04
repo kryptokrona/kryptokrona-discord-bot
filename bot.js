@@ -353,6 +353,7 @@ client.on('message', msg => {
       // Set the main content of the embed
       .setDescription('Current block height and hashrate')
       .addField("Hashrate", json.hashrate + ' h/s', true )
+      .addField("Difficulty", json.difficulty, true )
       .addField("Blocks", json.height, true );
     // Send the embed to the same channel as the message
 
