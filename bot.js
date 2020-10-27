@@ -5,7 +5,7 @@ const http = require('http');
 var walletd = new TurtleCoinWalletd(
   'http://localhost',
   8080,
-  'passw0rd',
+  'wee2k15',
   true
 )
 
@@ -125,7 +125,7 @@ client.on('guildMemberAdd', member => {
 
 
               	walletd
-                        .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['SEKReTyRMJx2LTUrbf2r7GdMJ9PY5yHbYN6MCZkKUVvKZSwwwf3HnUS6Jia3TkD4jWgfxeh1AEYV3DKEAesSb7mSAvNqfCNBXrg'])
+                        .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['<fund_address>'])
                         .then(resp => {
                           console.log(resp.status)
                           console.log(resp.headers)
@@ -190,7 +190,7 @@ client.on('message', msg => {
 
 
                 	walletd
-                          .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['SEKReTyRMJx2LTUrbf2r7GdMJ9PY5yHbYN6MCZkKUVvKZSwwwf3HnUS6Jia3TkD4jWgfxeh1AEYV3DKEAesSb7mSAvNqfCNBXrg'])
+                          .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['<fund_addess>'])
                           .then(resp => {
                             console.log(resp.status)
                             console.log(resp.headers)
@@ -217,7 +217,6 @@ client.on('message', msg => {
 
   if (msg.content.startsWith('!help')) {
 
-      console.log('help required kekeke');
 
     	const embed = new Discord.RichEmbed()
           // Set the title of the field
@@ -230,7 +229,6 @@ client.on('message', msg => {
           .addField("!help", 'Displays this message.', false )
           .addField("!status", 'Displays current status of the kryptokrona network.', false )
           .addField("!register <address>", 'Registers a kryptokrona address for receiving tips (tags shouldn\'t be used)', false )
-	  .addField("!balance", 'Displays your balance, pending transfers, and your address.', false )
           .addField("!tip <@user> <amount>", 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)', false )
           .addField("!send <address> <amount>", 'Sends <amount> XKR to <address> (tags shouldn\'t be used)', false )
         // Send the embed to the same channel as the message
@@ -286,7 +284,7 @@ client.on('message', msg => {
           })
           .catch(err => {
             console.log(err)
-		msg.author.send("Sorry you don't have enough XKR in your wallet. Use !balance for more information.");
+		msg.author.send("Sorry you don't have enough KKR in your wallet. Use !balance for more information.");
           })
 
 
@@ -392,7 +390,7 @@ client.on('message', msg => {
 
 	    locked = resp.body.result.lockedAmount / 100;
 
-	    msg.author.send("Your current balance is: " + balance + " XKR (" + locked + " pending). To top it up, send more to " + user_bank);
+	    msg.author.send("Your current balance is: " + balance + " KKR (" + locked + " pending). To top it up, send more to " + user_bank);
 
           })
           .catch(err => {
@@ -409,7 +407,7 @@ client.on('message', msg => {
 
 });
 
-client.login('discord-api-key');
+client.login('<insert_discord_api_key>');
 
 walletd
   .getStatus()
