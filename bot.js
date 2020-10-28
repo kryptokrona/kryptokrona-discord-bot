@@ -295,14 +295,34 @@ client.on('message', msg => {
           console.log('TipAll command activated');
           let allBanks = bank.wallets;
           command = msg.content.split(' ');
-          amount = command[1]/allBanks.length;
+          amount = command[1]/(allBanks.length-1);
+          sender_wallet = getUserBank(msg.author.id);
+          walletd
+              .getBalance(user_bank)
+              .then(resp => {
+                  console.log(resp.status)
+                  console.log(resp.headers)
+                  console.log(resp.body)
 
+                  balance = resp.body.result.availableBalance / 100;
+
+                  locked = resp.body.result.lockedAmount / 100;
+
+                  if (balance < amount*(allBanks.length-1)) {
+                      msg.reply('Sorry you don\'t have enough XKR in your wallet. Use !balance for more information.')
+                      return;
+                  }
+
+              })
+              .catch(err => {
+                  console.log(err)
+              })
 
           if ( command[2] ) {
               msg.reply('Too many arguments!');
               return;
           }
-          sender_wallet = getUserBank(msg.author.id);
+
           let counter = 0
           for (receiver_wallet in allBanks) {
               if (receiver_wallet == sender_wallet) {
