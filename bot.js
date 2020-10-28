@@ -230,6 +230,7 @@ client.on('message', msg => {
           .addField("!status", 'Displays current status of the kryptokrona network.', false )
           .addField("!register <address>", 'Registers a kryptokrona address for receiving tips (tags shouldn\'t be used)', false )
           .addField("!tip <@user> <amount>", 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)', false )
+	  .addField("!tipall <amount>", 'Sends <amount> XKR to every user in your Discord Server (tags shouldn\'t be used)', false )
           .addField("!send <address> <amount>", 'Sends <amount> XKR to <address> (tags shouldn\'t be used)', false )
         // Send the embed to the same channel as the message
 
