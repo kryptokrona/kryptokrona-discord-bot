@@ -326,7 +326,7 @@ client.on('message', msg => {
 
           let counter = 0
           for (i in allBanks) {
-              receiver_wallet = i.wallet;
+              receiver_wallet = allBanks[i].wallet;
               if (receiver_wallet == sender_wallet) {
                   continue;
               }
