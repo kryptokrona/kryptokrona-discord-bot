@@ -243,7 +243,7 @@ client.on('message', msg => {
 
   }
 
-  if (msg.content.startsWith('!tip')) {
+  if (msg.content.startsWith('!tip') && !msg.content.startsWith('!tipall')) {
 
 	command = msg.content.split(' ');
 	receiver = command[1];
