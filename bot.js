@@ -299,7 +299,7 @@ client.on('message', msg => {
           amount = command[1]/(allBanks.length-1);
           sender_wallet = getUserBank(msg.author.id);
           walletd
-              .getBalance(user_bank)
+              .getBalance(sender_wallet)
               .then(resp => {
                   console.log(resp.status)
                   console.log(resp.headers)
