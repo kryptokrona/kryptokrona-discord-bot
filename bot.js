@@ -230,6 +230,7 @@ client.on('message', msg => {
           .addField("!status", 'Displays current status of the kryptokrona network.', false )
           .addField("!register <address>", 'Registers a kryptokrona address for receiving tips (tags shouldn\'t be used)', false )
           .addField("!tip <@user> <amount>", 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)', false )
+	  .addField("!tipall <amount>", 'Sends <amount> XKR to every user in your Discord Server (tags shouldn\'t be used)', false )
           .addField("!send <address> <amount>", 'Sends <amount> XKR to <address> (tags shouldn\'t be used)', false )
         // Send the embed to the same channel as the message
 
@@ -250,9 +251,9 @@ client.on('message', msg => {
 
 	amount = command[2];
 
-  if ( command[3] ) {
+    if ( command[3] ) {
           msg.reply('Too many arguments!');
-  }
+    }
 
 	receiver_wallet = getUserWallet(receiver_id);
 
@@ -288,7 +289,77 @@ client.on('message', msg => {
           })
 
 
-}
+    }
+
+      if (msg.content.startsWith('!tipall')) {
+
+          console.log('TipAll command activated');
+          let allBanks = bank.wallets;
+          command = msg.content.split(' ');
+          amount = command[1]/(allBanks.length-1);
+          sender_wallet = getUserBank(msg.author.id);
+          walletd
+              .getBalance(user_bank)
+              .then(resp => {
+                  console.log(resp.status)
+                  console.log(resp.headers)
+                  console.log(resp.body)
+
+                  balance = resp.body.result.availableBalance / 100;
+
+                  locked = resp.body.result.lockedAmount / 100;
+
+                  if (balance < amount*(allBanks.length-1)) {
+                      msg.reply('Sorry you don\'t have enough XKR in your wallet. Use !balance for more information.')
+                      return;
+                  }
+
+              })
+              .catch(err => {
+                  console.log(err)
+              })
+
+          if ( command[2] ) {
+              msg.reply('Too many arguments!');
+              return;
+          }
+
+          let counter = 0
+          for (receiver_wallet in allBanks) {
+              if (receiver_wallet == sender_wallet) {
+                  continue;
+              }
+
+              walletd
+                  .sendTransaction(0, [{
+                      "address": receiver_wallet,
+                      "amount": parseInt(amount) * 100
+                  }], 10, [sender_wallet])
+                  .then(resp => {
+                      console.log(resp.status)
+                      console.log(resp.headers)
+                      console.log(resp.body)
+
+                      // sender_wallet = resp.body.result.address;
+
+                      msg.react("💸");
+                      counter = counter + 1;
+
+
+                  })
+                  .catch(err => {
+                      console.log(err)
+                      msg.author.send("Sorry you don't have enough KKR in your wallet. Use !balance for more information.");
+                      return;
+                  })
+
+          }
+          msg.reply(amount + ' KRR sent to ' + counter + ' people.');
+
+
+
+
+      }
 
   if (msg.content.startsWith('!send')) {
 
