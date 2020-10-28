@@ -324,7 +324,7 @@ client.on('message', msg => {
               return;
           }
 
-          let counter = 0
+
           for (i in allBanks) {
               receiver_wallet = allBanks[i].wallet;
               if (receiver_wallet == sender_wallet) {
@@ -344,7 +344,7 @@ client.on('message', msg => {
                       // sender_wallet = resp.body.result.address;
 
                       msg.react("💸");
-                      counter = counter + 1;
+
 
 
                   })
@@ -355,7 +355,7 @@ client.on('message', msg => {
                   })
 
           }
-          msg.reply(amount + ' KRR sent to ' + counter + ' people.');
+          msg.reply(amount + ' KRR sent to ' + (allBanks.length-1) + ' people.');
 
 
 
