@@ -340,6 +340,7 @@ client.on('message', msg => {
                       console.log(resp.status)
                       console.log(resp.headers)
                       console.log(resp.body)
+			client.users.get(allBanks[i].user).send("You were just sent " + parseInt(amount) + " XKR!");
 
                       // sender_wallet = resp.body.result.address;
 
