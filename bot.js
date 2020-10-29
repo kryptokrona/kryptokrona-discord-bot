@@ -285,7 +285,7 @@ client.on('message', msg => {
           })
           .catch(err => {
             console.log(err)
-		msg.author.send("Sorry you don't have enough KKR in your wallet. Use !balance for more information.");
+		msg.author.send("Sorry you don't have enough XKR in your wallet. Use !balance for more information.");
           })
 
 
@@ -351,12 +351,12 @@ client.on('message', msg => {
                   })
                   .catch(err => {
                       console.log(err)
-                      msg.author.send("Sorry you don't have enough KKR in your wallet. Use !balance for more information.");
+                      msg.author.send("Sorry you don't have enough XKR in your wallet. Use !balance for more information.");
                       return;
                   })
 
           }
-          msg.reply(amount + ' KRR sent to ' + (allBanks.length-1) + ' people.');
+          msg.reply(amount + ' XKR sent to ' + (allBanks.length-1) + ' people.');
 
 
 
@@ -463,7 +463,7 @@ client.on('message', msg => {
 
 	    locked = resp.body.result.lockedAmount / 100;
 
-	    msg.author.send("Your current balance is: " + balance + " KKR (" + locked + " pending). To top it up, send more to " + user_bank);
+	    msg.author.send("Your current balance is: " + balance + " XKR (" + locked + " pending). To top it up, send more to " + user_bank);
 
           })
           .catch(err => {
