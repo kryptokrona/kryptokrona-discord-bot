@@ -271,7 +271,7 @@ client.on('message', msg => {
 	}
 
 	walletd
-          .sendTransaction(0,[{"address":receiver_wallet,"amount":parseInt(amount)*100}],10,[sender_wallet])
+          .sendTransaction(0,[{"address":receiver_wallet,"amount":parseInt(amount*100)}],10,[sender_wallet])
           .then(resp => {
             console.log(resp.status)
             console.log(resp.headers)
@@ -334,7 +334,7 @@ client.on('message', msg => {
               walletd
                   .sendTransaction(0, [{
                       "address": receiver_wallet,
-                      "amount": parseInt(amount) * 100
+                      "amount": parseInt(amount * 100)
                   }], 10, [sender_wallet])
                   .then(resp => {
                       console.log(resp.status)
