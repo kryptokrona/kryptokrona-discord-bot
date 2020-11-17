@@ -444,7 +444,7 @@ client.on('message', msg => {
 });
 
   }
-  if (msg.content.startsWith('!balance') ) {
+  if (msg.content.startsWith('!balance') ||  msg.content.startsWith('!bal')) {
 	user_bank = getUserBank(msg.author.id);
 	console.log(user_bank);
 	if(!user_bank){
