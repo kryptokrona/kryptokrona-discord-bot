@@ -273,7 +273,7 @@ client.on('message', msg => {
 	}
 
 	walletd
-          .sendTransaction(0,[{"address":receiver_wallet,"amount":parseInt(amount)*100}],10,[sender_wallet])
+          .sendTransaction(0,[{"address":receiver_wallet,"amount":parseInt(amount*100)}],10,[sender_wallet])
           .then(resp => {
             console.log(resp.status)
             console.log(resp.headers)
@@ -287,7 +287,7 @@ client.on('message', msg => {
           })
           .catch(err => {
             console.log(err)
-		msg.author.send("Sorry you don't have enough KKR in your wallet. Use !balance for more information.");
+		msg.author.send("Sorry you don't have enough XKR in your wallet. Use !balance for more information.");
           })
 
 
@@ -336,7 +336,7 @@ client.on('message', msg => {
               walletd
                   .sendTransaction(0, [{
                       "address": receiver_wallet,
-                      "amount": parseInt(amount) * 100
+                      "amount": parseInt(amount * 100)
                   }], 10, [sender_wallet])
                   .then(resp => {
                       console.log(resp.status)
@@ -353,12 +353,12 @@ client.on('message', msg => {
                   })
                   .catch(err => {
                       console.log(err)
-                      msg.author.send("Sorry you don't have enough KKR in your wallet. Use !balance for more information.");
+                      msg.author.send("Sorry you don't have enough XKR in your wallet. Use !balance for more information.");
                       return;
                   })
 
           }
-          msg.reply(amount + ' KRR sent to ' + (allBanks.length-1) + ' people.');
+          msg.reply(amount + ' XKR sent to ' + (allBanks.length-1) + ' people.');
 
 
 
@@ -446,7 +446,7 @@ client.on('message', msg => {
 });
 
   }
-  if (msg.content.startsWith('!balance') ) {
+  if (msg.content.startsWith('!balance') ||  msg.content.startsWith('!bal')) {
 	user_bank = getUserBank(msg.author.id);
 	console.log(user_bank);
 	if(!user_bank){
@@ -465,7 +465,7 @@ client.on('message', msg => {
 
 	    locked = resp.body.result.lockedAmount / 100;
 
-	    msg.author.send("Your current balance is: " + balance + " KKR (" + locked + " pending). To top it up, send more to " + user_bank);
+	    msg.author.send("Your current balance is: " + balance + " XKR (" + locked + " pending). To top it up, send more to " + user_bank);
 
           })
           .catch(err => {
