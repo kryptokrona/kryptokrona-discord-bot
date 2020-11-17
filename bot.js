@@ -2,10 +2,12 @@ var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
 
 const http = require('http');
 
+const config = require('./config');
+
 var walletd = new TurtleCoinWalletd(
   'http://localhost',
   8080,
-  'wee2k15',
+  config.rpcPassword,
   true
 )
 
@@ -125,7 +127,7 @@ client.on('guildMemberAdd', member => {
 
 
               	walletd
-                        .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['<fund_address>'])
+                        .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,[config.donateAddress])
                         .then(resp => {
                           console.log(resp.status)
                           console.log(resp.headers)
@@ -190,7 +192,7 @@ client.on('message', msg => {
 
 
                 	walletd
-                          .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,['<fund_addess>'])
+                          .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,[config.donateAddress])
                           .then(resp => {
                             console.log(resp.status)
                             console.log(resp.headers)
@@ -480,7 +482,7 @@ client.on('message', msg => {
 
 });
 
-client.login('<insert_discord_api_key>');
+client.login(config.discordToken);
 
 walletd
   .getStatus()
