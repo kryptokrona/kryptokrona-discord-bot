@@ -2,6 +2,14 @@ var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
 
 const http = require('http');
 
+const fetch = require('node-fetch');
+
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
+
+let api = "https://spookyplanet.nl:3001/coin/XKR/LTC";
+
+let settings = { method: "Get" };
+
 const config = require('./config');
 
 var walletd = new TurtleCoinWalletd(
@@ -18,7 +26,7 @@ var fs = require('fs');
 let db = {'wallets':[]};
 
 try {
-	db = JSON.parse(fs.readFileSync('db.json', 'utf8')); 
+	db = JSON.parse(fs.readFileSync('db.json', 'utf8'));
 } catch(err) {}
 
 // LOAD DATABASE OF TIP FUND WALLETS (SERVER RECIEVE)
@@ -89,8 +97,9 @@ client.on('ready', () => {
 });
 
 client.on('guildMemberAdd', member => {
+  console.log('guildMemberAdd');
   // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.find(ch => ch.name === 'general');
+  const channel = member.guild.channels.cache.find(ch => ch.name === 'general');
   // Do nothing if the channel wasn't found on this server
   if (!channel) return;
   // Send the message, mentioning the member
@@ -219,28 +228,43 @@ client.on('message', msg => {
 
   if (msg.content.startsWith('!help')) {
 
+    const embed = {
+      "title": "AVAILABLE COMMANDS",
+      "description": "Simply type out these commands, either in a channel where kryptokronabot is present or in a private message to the bot",
+      "color": 12525523,
+      "footer": {
+        "icon_url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png"
+      },
+      "thumbnail": {
+        "url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png"
+      },
+      "fields": [
+        {
+          "name": "!help",
+          "value": "Displays this message."
+        },
+        {
+          "name": "!status",
+          "value": "Displays current status of the kryptokrona network."
+        },
+        {
+          "name": "!tip <@user> <amount>",
+          "value": 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)'
+        },
+        {
+          "name": "!tipall <amount>",
+          "value": 'Sends <amount> XKR to every user in your Discord Server (tags shouldn\'t be used)'
+        },
+        {
+          "name": "!send <amount> <address>",
+          "value": 'Sends <amount> XKR to <address> (tags shouldn\'t be used)'
+        }
+      ]
+    };
 
-    	const embed = new Discord.RichEmbed()
-          // Set the title of the field
-          .setTitle('AVAILABLE COMMANDS')
-          .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
-          // Set the color of the embed
-          .setColor(0xff9300)
-          // Set the main content of the embed
-          .setDescription('Simply type out these commands, either in a channel where kryptokronabot is present or in a private message to the bot')
-          .addField("!help", 'Displays this message.', false )
-          .addField("!status", 'Displays current status of the kryptokrona network.', false )
-          .addField("!register <address>", 'Registers a kryptokrona address for receiving tips (tags shouldn\'t be used)', false )
-          .addField("!tip <@user> <amount>", 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)', false )
-	  .addField("!tipall <amount>", 'Sends <amount> XKR to every user in your Discord Server (tags shouldn\'t be used)', false )
-          .addField("!send <address> <amount>", 'Sends <amount> XKR to <address> (tags shouldn\'t be used)', false )
-        // Send the embed to the same channel as the message
 
 
-
-
-
-    	msg.reply(embed);
+    	msg.reply({embed});
 
 
   }
@@ -273,7 +297,7 @@ client.on('message', msg => {
 	}
 
 	walletd
-          .sendTransaction(0,[{"address":receiver_wallet,"amount":parseInt(amount*100)}],10,[sender_wallet])
+          .sendTransaction(0,[{"address":receiver_wallet,"amount":parseInt(amount*100000)}],10,[sender_wallet])
           .then(resp => {
             console.log(resp.status)
             console.log(resp.headers)
@@ -307,9 +331,9 @@ client.on('message', msg => {
                   console.log(resp.headers)
                   console.log(resp.body)
 
-                  balance = resp.body.result.availableBalance / 100;
+                  balance = resp.body.result.availableBalance / 100000;
 
-                  locked = resp.body.result.lockedAmount / 100;
+                  locked = resp.body.result.lockedAmount / 100000;
 
                   if (balance < amount*(allBanks.length-1)) {
                       msg.reply('Sorry you don\'t have enough XKR in your wallet. Use !balance for more information.')
@@ -336,7 +360,7 @@ client.on('message', msg => {
               walletd
                   .sendTransaction(0, [{
                       "address": receiver_wallet,
-                      "amount": parseInt(amount * 100)
+                      "amount": parseInt(amount * 100000)
                   }], 10, [sender_wallet])
                   .then(resp => {
                       console.log(resp.status)
@@ -385,7 +409,7 @@ client.on('message', msg => {
     }
 
     walletd
-            .sendTransaction(0,[{"address":receiver_address,"amount":parseInt(amount)*100}],10,[sender_wallet])
+            .sendTransaction(0,[{"address":receiver_address,"amount":parseInt(amount)*100000}],10,[sender_wallet])
             .then(resp => {
               console.log(resp.status)
               console.log(resp.headers)
@@ -410,30 +434,118 @@ client.on('message', msg => {
 	http.get('http://localhost:11898/getinfo', (resp) => {
   let data = '';
 
+  let totalSupp = 0;
+
   // A chunk of data has been recieved.
   resp.on('data', (chunk) => {
     data += chunk;
-	console.log(data);
-	json = JSON.parse(data);
+	  console.log(data);
+	  json_node = JSON.parse(data);
+
+  fetch(api, settings)
+    .then(res => res.json())
+    .then((jsonapi) => {
+        // do something with JSON
+        console.log(json_node.height);
+
+        fetch('http://localhost:11898/json_rpc', {
+            method: 'POST',
+            body: JSON.stringify({
+              jsonrpc: "2.0",
+              id: "test",
+              method: "getblockheaderbyheight",
+              params: {
+                height: json_node.height - 1
+              }
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        }).then(res => res.json())
+          .then(
+
+            json => {
+
+                fetch('http://localhost:11898/json_rpc', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      jsonrpc: "2.0",
+                      id: "test",
+                      method: "f_block_json",
+                      params: {
+                        hash: json.result.block_header.hash
+                      }
+                    }),
+                    headers: { 'Content-Type': 'application/json' }
+                }).then(res => res.json())
+                  .then(
+                    jsonn => {
+
+                      fetch('https://api.coingecko.com/api/v3/simple/price?ids=kryptokrona&vs_currencies=usd', {
+                          method: 'GET'
+                      }).then(res => res.json())
+                        .then(
+                          jsongecko => {
+
+                            let  xkrprice = 0;
+				xkrprice = jsongecko.kryptokrona.usd;
 
 
-	const embed = new Discord.RichEmbed()
-      // Set the title of the field
-      .setTitle('KRYPTOKRONA STATUS')
-      .setThumbnail("https://kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
-      // Set the color of the embed
-      .setColor(0xff9300)
-      // Set the main content of the embed
-      .setDescription('Current block height and hashrate')
-      .addField("Hashrate", json.hashrate + ' h/s', true )
-      .addField("Blocks", json.height, true );
-    // Send the embed to the same channel as the message
+
+                        let marketCap = parseFloat(xkrprice * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
+
+                            const embed = {
+                              "title": "KRYPTOKRONA STATUS",
+                              "description": "This is live information about the kryptokrona network",
+                              "color": 12525523,
+                              "footer": {
+                                "icon_url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png",
+                                "text": "Type !help for more commands."
+                              },
+                              "thumbnail": {
+                                "url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png"
+                              },
+                              "fields": [
+                                {
+                                  "name": "⛏️",
+                                  "value": "Hashrate: " + json_node.hashrate + ' h/s',
+                                  "inline": true
+                                },
+                                {
+                                  "name": "📦",
+                                  "value": "Blockheight: " + json_node.height,
+                                  "inline": true
+                                },
+                                {
+                                  "name": "📈",
+                                  "value": "Current price: $" + xkrprice
+                                },
+                                {
+                                  "name": "Market cap:",
+                                  "value": "$" + marketCap
+                                }
+                              ]
+                            };
+
+
+                            msg.reply({ embed });
+
+                            });
+
+                          });
+
+
+            }
 
 
 
 
 
-	msg.reply(embed);
+        );
+
+
+    });
+
+
+
   });
 
   // The whole response has been received. Print out the result.
@@ -461,9 +573,9 @@ client.on('message', msg => {
             console.log(resp.headers)
             console.log(resp.body)
 
-            balance = resp.body.result.availableBalance / 100;
+            balance = resp.body.result.availableBalance / 100000;
 
-	    locked = resp.body.result.lockedAmount / 100;
+	    locked = resp.body.result.lockedAmount / 100000;
 
 	    msg.author.send("Your current balance is: " + balance + " XKR (" + locked + " pending). To top it up, send more to " + user_bank);
 
