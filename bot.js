@@ -142,7 +142,7 @@ client.on('guildMemberAdd', member => {
                           console.log(resp.headers)
                           console.log(resp.body)
 
-                          member.send('Oh, and we also deposited 1000 XKR to your wallet as a thanks for joining us! Don\'t spend it all in one place 🤪');
+                          member.send('Oh, and we also deposited 1 XKR to your wallet as a thanks for joining us! Don\'t spend it all in one place 🤪');
 
 
                         })
