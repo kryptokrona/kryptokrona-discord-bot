@@ -323,6 +323,10 @@ client.on('message', msg => {
           let allBanks = bank.wallets;
           command = msg.content.split(' ');
           amount = command[1]/(allBanks.length-1);
+          if (isNaN(amount) || typeof(amount) != "number") {
+              msg.reply('please input a valid number')
+              return;
+          }
           sender_wallet = getUserBank(msg.author.id);
           walletd
               .getBalance(sender_wallet)
