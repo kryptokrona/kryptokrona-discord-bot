@@ -54,7 +54,10 @@ let registerWallet = (user, address) => {
 	console.log(db.wallets);
 
 	let json = JSON.stringify(db);
-	fs.writeFile('db.json',json,'utf8');
+//	fs.writeFile('db.json',json,'utf8');
+	fs.writeFile('db.json',json, function(err, result) {
+		if (err) console.log('error', err);
+});
 
 }
 
@@ -75,8 +78,13 @@ let getUserWallet = (user) => {
 
 let getUserBank = (user) => {
 
+  console.log("Getting user bank..");
+
+  console.log("User:", user);
+
+
         for ( i in bank.wallets ) {
-                console.log(bank.wallets[i]);
+                console.log("Bank[i]:", bank.wallets[i]);
 
                 if (bank.wallets[i].user == user) {
                         return bank.wallets[i].wallet;
@@ -132,7 +140,9 @@ client.on('guildMemberAdd', member => {
 
 
               let json = JSON.stringify(bank);
-              fs.writeFile('bank.json',json,'utf8');
+              fs.writeFile('bank.json',json, function(err, result) {
+                if (err) console.log('error', err);
+		});
 
 
               	walletd
@@ -197,7 +207,9 @@ client.on('message', msg => {
 
 
                 let json = JSON.stringify(bank);
-                fs.writeFile('bank.json',json,'utf8');
+                fs.writeFile('bank.json',json, function(err, result) {
+                	if (err) console.log('error', err);
+		});
 
 
                 	walletd
@@ -256,7 +268,7 @@ client.on('message', msg => {
           "value": 'Sends <amount> XKR to every user in your Discord Server (tags shouldn\'t be used)'
         },
         {
-          "name": "!send <amount> <address>",
+          "name": "!send <address> <amount>",
           "value": 'Sends <amount> XKR to <address> (tags shouldn\'t be used)'
         }
       ]
@@ -479,18 +491,18 @@ client.on('message', msg => {
                   .then(
                     jsonn => {
 
-                      fetch('https://api.coingecko.com/api/v3/simple/price?ids=kryptokrona&vs_currencies=usd', {
+                      fetch('https://api.coingecko.com/api/v3/simple/price?ids=kryptokrona&vs_currencies=usd,sek,btc', {
                           method: 'GET'
                       }).then(res => res.json())
                         .then(
                           jsongecko => {
 
-                            let  xkrprice = 0;
-				xkrprice = jsongecko.kryptokrona.usd;
+                            let  xkrprice = {};
+				xkrprice = jsongecko.kryptokrona;
 
 
 
-                        let marketCap = parseFloat(xkrprice * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
+                        let marketCap = parseFloat(xkrprice.usd * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
 
                             const embed = {
                               "title": "KRYPTOKRONA STATUS",
@@ -505,18 +517,18 @@ client.on('message', msg => {
                               },
                               "fields": [
                                 {
-                                  "name": "⛏️",
-                                  "value": "Hashrate: " + json_node.hashrate + ' h/s',
+                                  "name": "⛏️ Hashrate:",
+                                  "value": json_node.hashrate + ' h/s',
                                   "inline": true
                                 },
                                 {
-                                  "name": "📦",
-                                  "value": "Blockheight: " + json_node.height,
+                                  "name": "📦 Blockheight:",
+                                  "value":json_node.height,
                                   "inline": true
                                 },
                                 {
-                                  "name": "📈",
-                                  "value": "Current price: $" + xkrprice
+                                  "name": "📈 Current price:",
+                                  "value": "$" + xkrprice.usd + " | " + parseFloat(xkrprice.btc).toFixed(8) + " BTC | " + xkrprice.sek + " SEK"
                                 },
                                 {
                                   "name": "Market cap:",
@@ -559,6 +571,7 @@ client.on('message', msg => {
 
   }
   if (msg.content.startsWith('!balance') ||  msg.content.startsWith('!bal')) {
+    console.log(msg.author.id);
 	user_bank = getUserBank(msg.author.id);
 	console.log(user_bank);
 	if(!user_bank){
