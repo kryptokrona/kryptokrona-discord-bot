@@ -275,9 +275,13 @@ client.on('message', msg => {
 	receiver = command[1];
 	receiver_id = receiver.replace(/[^0-9]/g,'');
 
-	amount = command[2];
-
-    if ( command[3] ) {
+      let current = 2;
+      amount = command[2];
+      while (amount === "") {
+          current++;
+          amount = command[current];
+      }
+    if ( command[current+1] ) {
           msg.reply('Too many arguments!');
     }
 
@@ -322,6 +326,12 @@ client.on('message', msg => {
           console.log('TipAll command activated');
           let allBanks = bank.wallets;
           command = msg.content.split(' ');
+          let current = 1;
+          amount = command[1];
+          while (amount === "") {
+              current++;
+              amount = command[current];
+          }
           amount = command[1]/(allBanks.length-1);
           sender_wallet = getUserBank(msg.author.id);
           walletd
@@ -345,7 +355,7 @@ client.on('message', msg => {
                   console.log(err)
               })
 
-          if ( command[2] ) {
+          if ( command[current+1] ) {
               msg.reply('Too many arguments!');
               return;
           }
@@ -366,7 +376,7 @@ client.on('message', msg => {
                       console.log(resp.status)
                       console.log(resp.headers)
                       console.log(resp.body)
-			client.users.get(allBanks[i].user).send("You were just sent " + parseInt(amount) + " XKR!");
+			// client.users.get(allBanks[i].user).send("You were just sent " + parseInt(amount) + " XKR!");
 
                       // sender_wallet = resp.body.result.address;
 
@@ -396,9 +406,14 @@ client.on('message', msg => {
     sender_wallet = getUserBank(msg.author.id);
     command = msg.content.split(' ');
   	receiver_address = command[1];
+  	let current = 2;
     amount = command[2];
+    while (amount === "") {
+        current++;
+        amount = command[current];
+    }
 
-    if ( command[3] ) {
+    if ( command[current+1] ) {
       msg.reply('Too many arguments!');
       return;
     }
