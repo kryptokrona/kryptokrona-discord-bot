@@ -1,0 +1,24 @@
+{
+  "name": "kryptokrona-discord-bot",
+  "version": "1.0.0",
+  "description": "A kryptokrona bot that can send and receive transactions",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kryptokrona/kryptokrona-discord-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kryptokrona/kryptokrona-discord-bot/issues"
+  },
+  "homepage": "https://github.com/kryptokrona/kryptokrona-discord-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "node-fetch": "^2.6.1",
+    "turtlecoin-walletd-rpc-js": "^0.7.2"
+  }
+}
