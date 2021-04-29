@@ -1,9 +1,9 @@
 # kryptokrona-discord-bot
-A bot for the Discord server chat.kryptokrona.se
+A bot for the [Discord server](https://chat.kryptokrona.se).
 
-#Installation
+# Installation
 Clone the repo, and then run
 
-npm install
+```npm install```
 
-Add your bot API token in the config.js file.
+Add your bot `API token` in the `config.js` file.
