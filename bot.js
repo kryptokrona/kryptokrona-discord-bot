@@ -264,10 +264,6 @@ client.on('message', msg => {
           "value": 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)'
         },
         {
-          "name": "!tipall <amount>",
-          "value": 'Sends <amount> XKR to every user in your Discord Server (tags shouldn\'t be used)'
-        },
-        {
           "name": "!send <address> <amount>",
           "value": 'Sends <amount> XKR to <address> (tags shouldn\'t be used)'
         }
@@ -329,7 +325,7 @@ client.on('message', msg => {
 
     }
 
-      if (msg.content.startsWith('!tipall')) {
+   /*    if (msg.content.startsWith('!tipall')) {
 
           console.log('TipAll command activated');
           let allBanks = bank.wallets;
@@ -399,7 +395,7 @@ client.on('message', msg => {
 
 
 
-      }
+      } */
 
   if (msg.content.startsWith('!send')) {
 
