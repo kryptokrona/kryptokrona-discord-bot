@@ -272,7 +272,7 @@ client.on('message', msg => {
 
   }
 
-  if (msg.content.startsWith('!tip') && !msg.content.startsWith('!tipall')) {
+  if (msg.content.startsWith('!tip')) {
 
 	command = msg.content.split(' ');
 	receiver = command[1];
@@ -287,7 +287,7 @@ client.on('message', msg => {
 	receiver_wallet = getUserWallet(receiver_id);
 
 	if (!receiver_wallet) {
-		client.users.get(receiver_id).send("Hello! You've just been sent a tip, but you don't have a registered wallet. Please use the !register <address> to receive tips.");
+    client.users.cache.get(receiver_id).send("Hello! You've just been sent a tip, but you don't have a registered wallet. Please use the !register <address> to receive tips.");
 	}
 
 	sender_wallet = getUserBank(msg.author.id);
