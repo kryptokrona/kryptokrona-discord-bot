@@ -63,7 +63,7 @@ let registerWallet = (user, address) => {
 
 }
 
-let getUserWallet = (user) => {
+let getUserWallet = async (user) => {
 
 	for ( i in db.wallets ) {
                 console.log(db.wallets[i]);
@@ -172,7 +172,7 @@ client.on('guildMemberAdd', member => {
 
 });
 
-client.on('message', msg => {
+client.on('message', async msg => {
 
   if ( msg.content.startsWith('!register') ) {
 
@@ -284,7 +284,7 @@ client.on('message', msg => {
           msg.reply('Too many arguments!');
     }
 
-	receiver_wallet = getUserWallet(receiver_id);
+	receiver_wallet = await getUserWallet(receiver_id);
 
 	if (!receiver_wallet) {
     client.users.cache.get(receiver_id).send("Hello! You've just been sent a tip, but you don't have a registered wallet. Please use the !register <address> to receive tips.");
