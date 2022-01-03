@@ -242,17 +242,12 @@ client.on('message', msg => {
 
   if (msg.content.startsWith('!help')) {
 
-    const embed = {
-      "title": "AVAILABLE COMMANDS",
-      "description": "Simply type out these commands, either in a channel where kryptokronabot is present or in a private message to the bot",
-      "color": 12525523,
-      "footer": {
-        "icon_url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png"
-      },
-      "thumbnail": {
-        "url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png"
-      },
-      "fields": [
+      const messageEmbed = new MessageEmbed()
+      .setColor("#0099ff")
+      .setTitle("AVAILABLE COMMANDS")
+      .setDescription("Simply type out these commands, either in a channel where kryptokronabot is present or in a private message to the bot")
+      .setThumbnail("https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
+      .addFields(
         {
           "name": "!help",
           "value": "Displays this message."
@@ -266,19 +261,13 @@ client.on('message', msg => {
           "value": 'Sends <amount> XKR to <@user> (tags shouldn\'t be used)'
         },
         {
-          "name": "!tipall <amount>",
-          "value": 'Sends <amount> XKR to every user in your Discord Server (tags shouldn\'t be used)'
-        },
-        {
           "name": "!send <address> <amount>",
           "value": 'Sends <amount> XKR to <address> (tags shouldn\'t be used)'
         }
-      ]
-    };
-
-
-
-    	msg.reply({embed});
+      )
+      .setTimestamp()
+      .setFooter()
+      msg.channel.send(messageEmbed)
 
 
   }
@@ -331,7 +320,7 @@ client.on('message', msg => {
 
     }
 
-      if (msg.content.startsWith('!tipall')) {
+      if (msg.content.startsWith('!tipalles')) {
 
           console.log('TipAll command activated');
           let allBanks = bank.wallets;
