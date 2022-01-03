@@ -536,8 +536,8 @@ client.on('message', msg => {
                               )
                               .setTimestamp()
                               .setFooter()
-
-                              msg.reply({ embeds: [messageEmbed] });
+     		 	      msg.channel.send(messageEmbed)
+                              //msg.reply({ embeds: [messageEmbed] });
 
                             });
 

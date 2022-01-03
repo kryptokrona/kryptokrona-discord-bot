@@ -10,3 +10,5 @@ A bot for the Discord server chat.kryptokrona.se
 ```npm install```
 
 4. Start the bot by running `node bot.js`
+
+Requires Node v.12.0.0 or higher.
