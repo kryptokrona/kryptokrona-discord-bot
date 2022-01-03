@@ -74,8 +74,6 @@ let getUserWallet = async (user) => {
 
         }
 
-	return false;
-
 }
 
 let getUserBank = async (user) => {
@@ -283,7 +281,7 @@ client.on('message', async msg => {
     if ( command[3] ) {
           msg.reply('Too many arguments!');
     }
-
+  let receiver_wallet = false;
 	receiver_wallet = await getUserWallet(receiver_id);
 
 	if (!receiver_wallet) {
