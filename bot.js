@@ -78,7 +78,7 @@ let getUserWallet = async (user) => {
 
 }
 
-let getUserBank = (user) => {
+let getUserBank = async (user) => {
 
   console.log("Getting user bank..");
 
@@ -106,7 +106,7 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('guildMemberAdd', member => {
+client.on('guildMemberAdd', async member => {
   console.log('guildMemberAdd');
   // Send the message to a designated channel on a server:
   const channel = member.guild.channels.cache.find(ch => ch.name === 'general');
@@ -117,7 +117,7 @@ client.on('guildMemberAdd', member => {
 
 
 
-  user_bank = getUserBank(member.id);
+  user_bank = await getUserBank(member.id);
 
   if (!user_bank) {
     walletd
@@ -184,7 +184,7 @@ client.on('message', async msg => {
 	}
 
 
-    user_bank = getUserBank(msg.author.id);
+    user_bank = await getUserBank(msg.author.id);
 
     if (!user_bank) {
       walletd
@@ -290,7 +290,7 @@ client.on('message', async msg => {
     client.users.cache.get(receiver_id).send("Hello! You've just been sent a tip, but you don't have a registered wallet. Please use the !register <address> to receive tips.");
 	}
 
-	sender_wallet = getUserBank(msg.author.id);
+	sender_wallet = await getUserBank(msg.author.id);
 
 
 	if(!sender_wallet) {
@@ -396,7 +396,7 @@ client.on('message', async msg => {
 
     console.log('Send command activated');
 
-    sender_wallet = getUserBank(msg.author.id);
+    sender_wallet = await getUserBank(msg.author.id);
     command = msg.content.split(' ');
   	receiver_address = command[1];
     amount = command[2];
@@ -556,7 +556,7 @@ client.on('message', async msg => {
   }
   if (msg.content.startsWith('!balance') ||  msg.content.startsWith('!bal')) {
     console.log(msg.author.id);
-	user_bank = getUserBank(msg.author.id);
+	user_bank = await getUserBank(msg.author.id);
 	console.log(user_bank);
 	if(!user_bank){
 		msg.reply("You don't have a wallet yet! Use !register to get one.");
