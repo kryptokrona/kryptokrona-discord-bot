@@ -14,7 +14,7 @@ const config = require('./config');
 
 var walletd = new TurtleCoinWalletd(
   'http://localhost',
-  8080,
+  8888,
   config.rpcPassword,
   true
 )
@@ -35,7 +35,8 @@ let bank = {'wallets':[]};
 
 try {
         bank = JSON.parse(fs.readFileSync('bank.json', 'utf8'));
-} catch(err) {}
+	console.log('bank:', bank);
+} catch(err) {console.log(err)}
 
 
 
@@ -146,7 +147,7 @@ client.on('guildMemberAdd', member => {
 
 
               	walletd
-                        .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,[config.donateAddress])
+                        .sendTransaction(7,[{"address":wallet_addr,"amount":100000}],1000,[config.donateAddress])
                         .then(resp => {
                           console.log(resp.status)
                           console.log(resp.headers)
@@ -213,7 +214,7 @@ client.on('message', msg => {
 
 
                 	walletd
-                          .sendTransaction(0,[{"address":wallet_addr,"amount":100000}],10,[config.donateAddress])
+                          .sendTransaction(7,[{"address":wallet_addr,"amount":100000}],1000,[config.donateAddress])
                           .then(resp => {
                             console.log(resp.status)
                             console.log(resp.headers)
@@ -245,10 +246,10 @@ client.on('message', msg => {
       "description": "Simply type out these commands, either in a channel where kryptokronabot is present or in a private message to the bot",
       "color": 12525523,
       "footer": {
-        "icon_url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png"
+        "icon_url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png"
       },
       "thumbnail": {
-        "url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png"
+        "url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png"
       },
       "fields": [
         {
@@ -309,7 +310,7 @@ client.on('message', msg => {
 	}
 
 	walletd
-          .sendTransaction(0,[{"address":receiver_wallet,"amount":parseInt(amount*100000)}],10,[sender_wallet])
+          .sendTransaction(3,[{"address":receiver_wallet,"amount":parseInt(amount*100000)}],1000,[sender_wallet])
           .then(resp => {
             console.log(resp.status)
             console.log(resp.headers)
@@ -370,10 +371,10 @@ client.on('message', msg => {
               }
 
               walletd
-                  .sendTransaction(0, [{
+                  .sendTransaction(7, [{
                       "address": receiver_wallet,
                       "amount": parseInt(amount * 100000)
-                  }], 10, [sender_wallet])
+                  }], 1000, [sender_wallet])
                   .then(resp => {
                       console.log(resp.status)
                       console.log(resp.headers)
@@ -421,7 +422,7 @@ client.on('message', msg => {
     }
 
     walletd
-            .sendTransaction(0,[{"address":receiver_address,"amount":parseInt(amount)*100000}],10,[sender_wallet])
+            .sendTransaction(3,[{"address":receiver_address,"amount":parseInt(amount)*100000}],1000,[sender_wallet])
             .then(resp => {
               console.log(resp.status)
               console.log(resp.headers)
@@ -443,24 +444,18 @@ client.on('message', msg => {
 
   if (msg.content.startsWith('!status') ) {
 
-	http.get('http://localhost:11898/getinfo', (resp) => {
-  let data = '';
+	http.get('http://pool.kryptokrona.se:11898/getinfo', (resp) => {
+	  let data = '';
 
   let totalSupp = 0;
-
   // A chunk of data has been recieved.
   resp.on('data', (chunk) => {
     data += chunk;
-	  console.log(data);
 	  json_node = JSON.parse(data);
+	console.log('json_node:', json_node);
 
-  fetch(api, settings)
-    .then(res => res.json())
-    .then((jsonapi) => {
-        // do something with JSON
-        console.log(json_node.height);
-
-        fetch('http://localhost:11898/json_rpc', {
+	console.log('height', json_node.height - 1);
+        fetch('http://pool.kryptokrona.se:11898/json_rpc', {
             method: 'POST',
             body: JSON.stringify({
               jsonrpc: "2.0",
@@ -474,9 +469,10 @@ client.on('message', msg => {
         }).then(res => res.json())
           .then(
 
-            json => {
 
-                fetch('http://localhost:11898/json_rpc', {
+            json => {
+			console.log('json:', json);
+                fetch('http://pool.kryptokrona.se:11898/json_rpc', {
                     method: 'POST',
                     body: JSON.stringify({
                       jsonrpc: "2.0",
@@ -490,13 +486,12 @@ client.on('message', msg => {
                 }).then(res => res.json())
                   .then(
                     jsonn => {
-
+			console.log('jsonn', jsonn);
                       fetch('https://api.coingecko.com/api/v3/simple/price?ids=kryptokrona&vs_currencies=usd,sek,btc', {
                           method: 'GET'
                       }).then(res => res.json())
                         .then(
                           jsongecko => {
-
                             let  xkrprice = {};
 				xkrprice = jsongecko.kryptokrona;
 
@@ -509,11 +504,11 @@ client.on('message', msg => {
                               "description": "This is live information about the kryptokrona network",
                               "color": 12525523,
                               "footer": {
-                                "icon_url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png",
+                                "icon_url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png",
                                 "text": "Type !help for more commands."
                               },
                               "thumbnail": {
-                                "url": "https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png"
+                                "url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png"
                               },
                               "fields": [
                                 {
@@ -554,15 +549,11 @@ client.on('message', msg => {
         );
 
 
-    });
-
-
 
   });
 
   // The whole response has been received. Print out the result.
   resp.on('end', () => {
-    console.log(JSON.parse(data).explanation);
   });
 
 }).on("error", (err) => {
