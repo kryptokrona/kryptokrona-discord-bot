@@ -92,8 +92,6 @@ let getUserBank = async (user) => {
 
         }
 
-        return false;
-
 
 }
 
@@ -114,7 +112,7 @@ client.on('guildMemberAdd', async member => {
   channel.send(`Welcome to the server, ${member}`);
 
 
-
+  user_bank = false;
   user_bank = await getUserBank(member.id);
 
   if (!user_bank) {
@@ -181,7 +179,7 @@ client.on('message', async msg => {
 		return;
 	}
 
-
+    user_bank = false;
     user_bank = await getUserBank(msg.author.id);
 
     if (!user_bank) {
@@ -287,7 +285,7 @@ client.on('message', async msg => {
 	if (!receiver_wallet) {
     client.users.cache.get(receiver_id).send("Hello! You've just been sent a tip, but you don't have a registered wallet. Please use the !register <address> to receive tips.");
 	}
-
+  sender_wallet = false;
 	sender_wallet = await getUserBank(msg.author.id);
 
 
@@ -324,6 +322,7 @@ client.on('message', async msg => {
           let allBanks = bank.wallets;
           command = msg.content.split(' ');
           amount = command[1]/(allBanks.length-1);
+          sender_wallet = false;
           sender_wallet = getUserBank(msg.author.id);
           walletd
               .getBalance(sender_wallet)
@@ -393,7 +392,7 @@ client.on('message', async msg => {
   if (msg.content.startsWith('!send')) {
 
     console.log('Send command activated');
-
+    sender_wallet = false;
     sender_wallet = await getUserBank(msg.author.id);
     command = msg.content.split(' ');
   	receiver_address = command[1];
@@ -554,6 +553,7 @@ client.on('message', async msg => {
   }
   if (msg.content.startsWith('!balance') ||  msg.content.startsWith('!bal')) {
     console.log(msg.author.id);
+    user_bank = false;
 	user_bank = await getUserBank(msg.author.id);
 	console.log(user_bank);
 	if(!user_bank){
