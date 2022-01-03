@@ -1,4 +1,5 @@
 var TurtleCoinWalletd = require('turtlecoin-walletd-rpc-js').default
+const { MessageEmbed } = require('discord.js');
 
 const http = require('http');
 
