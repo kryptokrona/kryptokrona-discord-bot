@@ -499,41 +499,44 @@ client.on('message', msg => {
 
                         let marketCap = parseFloat(xkrprice.usd * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
 
-                            const embed = {
-                              "title": "KRYPTOKRONA STATUS",
-                              "description": "This is live information about the kryptokrona network",
-                              "color": 12525523,
-                              "footer": {
-                                "icon_url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png",
-                                "text": "Type !help for more commands."
-                              },
-                              "thumbnail": {
-                                "url": "https://user-images.githubusercontent.com/36674091/104137640-4e5f4b80-5396-11eb-9cda-5554620d2a47.png"
-                              },
-                              "fields": [
+                              // inside a command, event listener, etc.
+                              const messageEmbed = new MessageEmbed()
+                              .setColor("#0099ff")
+                              .setTitle("KRYPTOKRONA STATUS")
+                              .setDescription("This is live information about the kryptokrona network")
+                              .setThumbnail("https://old.kryptokrona.se/wp-content/uploads/2019/04/logo-white-shadow.png")
+                              .addFields(
                                 {
-                                  "name": "⛏️ Hashrate:",
-                                  "value": json_node.hashrate + ' h/s',
-                                  "inline": true
+                                  name: "Hashrate",
+                                  value: json_node.hashrate + " h/s",
+                                },
+                                { name: "\u200B", value: "\u200B" },
+                                {
+                                  name: "📦 Blockheight:",
+                                  value: json_node.height,
+                                  inline: true,
                                 },
                                 {
-                                  "name": "📦 Blockheight:",
-                                  "value":json_node.height,
-                                  "inline": true
+                                  name: "📈 Current price:",
+                                  value:
+                                  "$" +
+                                  xkrprice.usd +
+                                  " | " +
+                                  parseFloat(xkrprice.btc).toFixed(8) +
+                                  " BTC | " +
+                                  xkrprice.sek +
+                                  " SEK",
+                                  inline: true,
                                 },
                                 {
-                                  "name": "📈 Current price:",
-                                  "value": "$" + xkrprice.usd + " | " + parseFloat(xkrprice.btc).toFixed(8) + " BTC | " + xkrprice.sek + " SEK"
-                                },
-                                {
-                                  "name": "Market cap:",
-                                  "value": "$" + marketCap
+                                  name: "Market cap:",
+                                  value: "$" + marketCap,
                                 }
-                              ]
-                            };
+                              )
+                              .setTimestamp()
+                              .setFooter()
 
-
-                            msg.reply({ embed });
+                              msg.reply({ embeds: [messageEmbed] });
 
                             });
 
