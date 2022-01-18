@@ -105,11 +105,11 @@ client.on('ready', () => {
 client.on('guildMemberAdd', async member => {
   console.log('guildMemberAdd');
   // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'general');
+  const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
   // Do nothing if the channel wasn't found on this server
   if (!channel) return;
   // Send the message, mentioning the member
-  channel.send(`Welcome to the server, ${member}`);
+  channel.send(`Welcome to the Kryptokrona server, ${member}! To gain access you just need to react to the message in #roles `);
 
 
   user_bank = false;
