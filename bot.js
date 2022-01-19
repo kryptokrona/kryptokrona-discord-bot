@@ -36,7 +36,6 @@ let bank = {'wallets':[]};
 
 try {
         bank = JSON.parse(fs.readFileSync('bank.json', 'utf8'));
-	console.log('bank:', bank);
 } catch(err) {console.log(err)}
 
 
@@ -44,7 +43,6 @@ try {
 let registerWallet = (user, address) => {
 
 	for ( i in db.wallets ) {
-		console.log(db.wallets[i]);
 
 		if (db.wallets[i].user == user) {
 			db.wallets.splice(i, 1);
@@ -53,10 +51,8 @@ let registerWallet = (user, address) => {
 	}
 
 	db.wallets.push({"user":user,"address":address});
-	console.log(db.wallets);
 
 	let json = JSON.stringify(db);
-//	fs.writeFile('db.json',json,'utf8');
 	fs.writeFile('db.json',json, function(err, result) {
 		if (err) console.log('error', err);
 });
@@ -64,9 +60,7 @@ let registerWallet = (user, address) => {
 }
 
 let getUserWallet = async (user) => {
-
 	for ( i in db.wallets ) {
-                console.log(db.wallets[i]);
 
                 if (db.wallets[i].user == user) {
                         return db.wallets[i].address;
@@ -78,13 +72,8 @@ let getUserWallet = async (user) => {
 
 let getUserBank = async (user) => {
 
-  console.log("Getting user bank..");
-
-  console.log("User:", user);
-
 
         for ( i in bank.wallets ) {
-                console.log("Bank[i]:", bank.wallets[i]);
 
                 if (bank.wallets[i].user == user) {
                         return bank.wallets[i].wallet;
@@ -103,7 +92,6 @@ client.on('ready', () => {
 });
 
 client.on('guildMemberAdd', async member => {
-  console.log('guildMemberAdd');
   // Send the message to a designated channel on a server:
   const channel = member.guild.channels.cache.find(ch => ch.name === 'general');
   // Do nothing if the channel wasn't found on this server
@@ -119,9 +107,6 @@ client.on('guildMemberAdd', async member => {
     walletd
             .createAddress()
             .then(resp => {
-              console.log(resp.status)
-              console.log(resp.headers)
-              console.log(resp.body)
 
               wallet_addr = resp.body.result.address;
 
@@ -146,9 +131,6 @@ client.on('guildMemberAdd', async member => {
               	walletd
                         .sendTransaction(7,[{"address":wallet_addr,"amount":100000}],1000,[config.donateAddress])
                         .then(resp => {
-                          console.log(resp.status)
-                          console.log(resp.headers)
-                          console.log(resp.body)
 
                           member.send('Oh, and we also deposited 1 XKR to your wallet as a thanks for joining us! Don\'t spend it all in one place 🤪');
 
@@ -186,9 +168,6 @@ client.on('message', async msg => {
       walletd
               .createAddress()
               .then(resp => {
-                console.log(resp.status)
-                console.log(resp.headers)
-                console.log(resp.body)
 
                 wallet_addr = resp.body.result.address;
 
@@ -213,9 +192,6 @@ client.on('message', async msg => {
                 	walletd
                           .sendTransaction(7,[{"address":wallet_addr,"amount":100000}],1000,[config.donateAddress])
                           .then(resp => {
-                            console.log(resp.status)
-                            console.log(resp.headers)
-                            console.log(resp.body)
 
                             member.send('Oh, and we also deposited 1 XKR to your wallet as a thanks for joining us! Don\'t spend it all in one place 🤪');
 
@@ -280,7 +256,7 @@ client.on('message', async msg => {
           msg.reply('Too many arguments!');
     }
   let receiver_wallet = false;
-	receiver_wallet = await getUserWallet(receiver_id);
+	receiver_wallet = await getUserBank(receiver_id);
 
 	if (!receiver_wallet) {
     client.users.cache.get(receiver_id).send("Hello! You've just been sent a tip, but you don't have a registered wallet. Please use the !register <address> to receive tips.");
@@ -294,13 +270,9 @@ client.on('message', async msg => {
 		msg.author.send("Please use the !register command to obtain a wallet which you can transfer tipping funds to. The command takes one argument, an already existing SEKR address that will be your wallet for receiving tips.");
 		return;
 	}
-
 	walletd
           .sendTransaction(3,[{"address":receiver_wallet,"amount":parseInt(amount*100000)}],1000,[sender_wallet])
           .then(resp => {
-            console.log(resp.status)
-            console.log(resp.headers)
-            console.log(resp.body)
 
             sender_wallet = resp.body.result.address;
 
@@ -318,7 +290,6 @@ client.on('message', async msg => {
 
       if (msg.content.startsWith('!tipalles')) {
 
-          console.log('TipAll command activated');
           let allBanks = bank.wallets;
           command = msg.content.split(' ');
           amount = command[1]/(allBanks.length-1);
@@ -327,9 +298,6 @@ client.on('message', async msg => {
           walletd
               .getBalance(sender_wallet)
               .then(resp => {
-                  console.log(resp.status)
-                  console.log(resp.headers)
-                  console.log(resp.body)
 
                   balance = resp.body.result.availableBalance / 100000;
 
@@ -363,12 +331,7 @@ client.on('message', async msg => {
                       "amount": parseInt(amount * 100000)
                   }], 1000, [sender_wallet])
                   .then(resp => {
-                      console.log(resp.status)
-                      console.log(resp.headers)
-                      console.log(resp.body)
 			client.users.get(allBanks[i].user).send("You were just sent " + parseInt(amount) + " XKR!");
-
-                      // sender_wallet = resp.body.result.address;
 
                       msg.react("💸");
 
@@ -391,7 +354,6 @@ client.on('message', async msg => {
 
   if (msg.content.startsWith('!send')) {
 
-    console.log('Send command activated');
     sender_wallet = false;
     sender_wallet = await getUserBank(msg.author.id);
     command = msg.content.split(' ');
@@ -411,9 +373,6 @@ client.on('message', async msg => {
     walletd
             .sendTransaction(3,[{"address":receiver_address,"amount":parseInt(amount)*100000}],1000,[sender_wallet])
             .then(resp => {
-              console.log(resp.status)
-              console.log(resp.headers)
-              console.log(resp.body)
 
               sender_wallet = resp.body.result.address;
 
@@ -439,9 +398,6 @@ client.on('message', async msg => {
   resp.on('data', (chunk) => {
     data += chunk;
 	  json_node = JSON.parse(data);
-	console.log('json_node:', json_node);
-
-	console.log('height', json_node.height - 1);
         fetch('http://pool.kryptokrona.se:11898/json_rpc', {
             method: 'POST',
             body: JSON.stringify({
@@ -458,7 +414,6 @@ client.on('message', async msg => {
 
 
             json => {
-			console.log('json:', json);
                 fetch('http://pool.kryptokrona.se:11898/json_rpc', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -473,7 +428,6 @@ client.on('message', async msg => {
                 }).then(res => res.json())
                   .then(
                     jsonn => {
-			console.log('jsonn', jsonn);
                       fetch('https://api.coingecko.com/api/v3/simple/price?ids=kryptokrona&vs_currencies=usd,sek,btc', {
                           method: 'GET'
                       }).then(res => res.json())
@@ -552,10 +506,8 @@ client.on('message', async msg => {
 
   }
   if (msg.content.startsWith('!balance') ||  msg.content.startsWith('!bal')) {
-    console.log(msg.author.id);
     user_bank = false;
 	user_bank = await getUserBank(msg.author.id);
-	console.log(user_bank);
 	if(!user_bank){
 		msg.reply("You don't have a wallet yet! Use !register to get one.");
 		return;
@@ -564,9 +516,6 @@ client.on('message', async msg => {
 	 walletd
           .getBalance(user_bank)
           .then(resp => {
-            console.log(resp.status)
-            console.log(resp.headers)
-            console.log(resp.body)
 
             balance = resp.body.result.availableBalance / 100000;
 
@@ -594,9 +543,6 @@ client.login(config.discordToken);
 walletd
   .getStatus()
   .then(resp => {
-    console.log(resp.status)
-    console.log(resp.headers)
-    console.log(resp.body)
   })
   .catch(err => {
     console.log(err)
