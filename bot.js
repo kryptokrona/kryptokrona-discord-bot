@@ -428,17 +428,17 @@ client.on('message', async msg => {
                 }).then(res => res.json())
                   .then(
                     jsonn => {
-                      fetch('https://api.coingecko.com/api/v3/simple/price?ids=kryptokrona&vs_currencies=usd,sek,btc', {
+                      fetch('https://api.coinpaprika.com/v1/tickers/xkr-kryptokrona', {
                           method: 'GET'
                       }).then(res => res.json())
                         .then(
                           jsongecko => {
                             let  xkrprice = {};
-				xkrprice = jsongecko.kryptokrona;
+				xkrprice = jsongecko.quotes.USD.price;
 
 
 
-                        let marketCap = parseFloat(xkrprice.usd * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
+                        let marketCap = parseFloat(xkrprice * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
 
                               // inside a command, event listener, etc.
                               const messageEmbed = new MessageEmbed()
@@ -459,14 +459,7 @@ client.on('message', async msg => {
                                 },
                                 {
                                   name: "📈 Current price:",
-                                  value:
-                                  "$" +
-                                  xkrprice.usd +
-                                  " | " +
-                                  parseFloat(xkrprice.btc).toFixed(8) +
-                                  " BTC | " +
-                                  xkrprice.sek +
-                                  " SEK",
+                                  value:"$" + xkrprice,
                                   inline: true,
                                 },
                                 {
