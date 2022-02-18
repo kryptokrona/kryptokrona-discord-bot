@@ -434,11 +434,11 @@ client.on('message', async msg => {
                         .then(
                           jsongecko => {
                             let  xkrprice = {};
-				xkrprice = jsongecko.quotes.USD.price;
+				            xkrprice = jsongecko.quotes.USD.price;
 
 
-
-                        let marketCap = parseFloat(xkrprice * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
+                            let volume = (jsongecko.quotes.USD.volume_24h).toFixed(0)
+                            let marketCap = parseFloat(xkrprice * parseInt(jsonn.result.block.alreadyGeneratedCoins) / 100000).toFixed(2);
 
                               // inside a command, event listener, etc.
                               const messageEmbed = new MessageEmbed()
@@ -465,7 +465,12 @@ client.on('message', async msg => {
                                 {
                                   name: "Market cap:",
                                   value: "$" + marketCap,
+                                },
+                                {
+                                  name: "Volume 24H",
+                                  value: "$" + volume,
                                 }
+
                               )
                               .setTimestamp()
                               .setFooter()
